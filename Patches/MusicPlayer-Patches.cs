@@ -61,28 +61,37 @@ public class MusicPlayer_Patches_RefreshMusicQueueForStage
     {
         __instance.musicTrackQueue.ClearTracks();
 
-        Story.ObjectiveInfo currentObjectiveInfo = Story.GetCurrentObjectiveInfo();
-        if (stage == Stage.hideout)
+        if (BombRushRadio.AllowBaseMusic.Value)
         {
-            MusicTrack musicTrackByID = Core.Instance.AudioManager.MusicLibraryPlayer.GetMusicTrackByID(MusicTrackID.Hideout_Mixtape);
-            __instance.AddMusicTrack(musicTrackByID);
-            Debug.Log("[BRR] [BASE-GAME] Added " + musicTrackByID.Title + " to the total list.");
-        }
-        else
-        {
-            MusicTrack chapterMusic2 = chapterMusic.GetChapterMusic(currentObjectiveInfo.chapter);
-            __instance.AddMusicTrack(chapterMusic2);
-            Debug.Log("[BRR] [BASE-GAME] Added " + chapterMusic2.Title + " to the total list.");
-        }
-        AUnlockable[] unlockables = WorldHandler.instance.GetCurrentPlayer().phone.GetAppInstance<AppMusicPlayer>().Unlockables;
-        for (int i = 0; i < unlockables.Length; i++)
-        {
-            var musicTrack = unlockables[i] as MusicTrack;
-            if (Core.Instance.Platform.User.GetUnlockableSaveDataFor(musicTrack).IsUnlocked)
+            if (BombRushRadio.AllowMixtapes.Value)
             {
-                musicTrack.isRepeatable = false;
-                __instance.AddMusicTrack(musicTrack);
-                Debug.Log("[BRR] [BASE-GAME] Added " + musicTrack.Title + " to the total list.");
+                Story.ObjectiveInfo currentObjectiveInfo = Story.GetCurrentObjectiveInfo();
+                if (stage == Stage.hideout)
+                {
+                    MusicTrack musicTrackByID = Core.Instance.AudioManager.MusicLibraryPlayer.GetMusicTrackByID(MusicTrackID.Hideout_Mixtape);
+                    __instance.AddMusicTrack(musicTrackByID);
+                    Debug.Log("[BRR] [BASE-GAME] Added " + musicTrackByID.Title + " to the total list.");
+                }
+                else
+                {
+                    MusicTrack chapterMusic2 = chapterMusic.GetChapterMusic(currentObjectiveInfo.chapter);
+                    __instance.AddMusicTrack(chapterMusic2);
+                    Debug.Log("[BRR] [BASE-GAME] Added " + chapterMusic2.Title + " to the total list.");
+                }
+            }
+
+            AUnlockable[] unlockables = WorldHandler.instance.GetCurrentPlayer().phone.GetAppInstance<AppMusicPlayer>().Unlockables;
+            foreach (MusicTrack musicTrack in unlockables)
+            {
+                if (!BombRushRadio.AllowMixtapes.Value && musicTrack.Artist is "DJ Cyber" or "Tryce")
+                    continue;
+
+                if (Core.Instance.Platform.User.GetUnlockableSaveDataFor(musicTrack).IsUnlocked)
+                {
+                    musicTrack.isRepeatable = false;
+                    __instance.AddMusicTrack(musicTrack);
+                    Debug.Log("[BRR] [BASE-GAME] Added " + musicTrack.Title + " to the total list.");
+                }
             }
         }
 

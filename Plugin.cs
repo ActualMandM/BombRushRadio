@@ -15,6 +15,8 @@ namespace BombRushRadio;
 [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
 public class BombRushRadio : BaseUnityPlugin
 {
+    public static ConfigEntry<bool> AllowBaseMusic;
+    public static ConfigEntry<bool> AllowMixtapes;
     public static ConfigEntry<KeyCode> ReloadKey;
 
     public static MusicPlayer MInstance;
@@ -207,7 +209,9 @@ public class BombRushRadio : BaseUnityPlugin
         }
 
         // bind to config
-        ReloadKey = Config.Bind("Settings", "Reload Key", KeyCode.F1, "Keybind used for reloading songs.");
+        AllowBaseMusic = Config.Bind("Settings", "Allow Base Music", true, "Whether or not to add base game music.");
+        AllowMixtapes = Config.Bind("Settings", "Allow Mixtapes", true, "Whether or not to add base game mixtapes.");
+        ReloadKey = Config.Bind("Settings", "Reload Key", KeyCode.F1, "The keybind used for reloading songs.");
 
         // load em
         StartCoroutine(ReloadSongs());
