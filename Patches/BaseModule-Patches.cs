@@ -9,6 +9,7 @@ public class UnloadMainMenuScenePatch
     static void Prefix()
     {
         BombRushRadio.InMainMenu = false;
+        BombRushRadio.Shuffled = false;
     }
 }
 

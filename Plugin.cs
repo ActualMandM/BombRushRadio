@@ -15,6 +15,7 @@ namespace BombRushRadio;
 [BepInPlugin(PluginInfo.PLUGIN_GUID, PluginInfo.PLUGIN_NAME, PluginInfo.PLUGIN_VERSION)]
 public class BombRushRadio : BaseUnityPlugin
 {
+    public static ConfigEntry<bool> DefaultShuffle;
     public static ConfigEntry<bool> AllowBaseMusic;
     public static ConfigEntry<bool> AllowMixtapes;
     public static ConfigEntry<KeyCode> ReloadKey;
@@ -26,7 +27,7 @@ public class BombRushRadio : BaseUnityPlugin
 
     private static readonly List<string> Loaded = new();
 
-    public static bool InMainMenu = false;
+    public static bool InMainMenu, Shuffled = false;
     public static bool Loading;
 
     private readonly AudioType[] _trackerTypes = new[] { AudioType.IT, AudioType.MOD, AudioType.S3M, AudioType.XM };
@@ -209,6 +210,7 @@ public class BombRushRadio : BaseUnityPlugin
         }
 
         // bind to config
+        DefaultShuffle = Config.Bind("Settings", "Shuffle by Default", false, "Whether or not songs are shuffled by default.");
         AllowBaseMusic = Config.Bind("Settings", "Allow Base Music", true, "Whether or not to add base game music.");
         AllowMixtapes = Config.Bind("Settings", "Allow Mixtapes", true, "Whether or not to add base game mixtapes.");
         ReloadKey = Config.Bind("Settings", "Reload Key", KeyCode.F1, "The keybind used for reloading songs.");

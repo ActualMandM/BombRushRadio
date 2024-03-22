@@ -111,7 +111,6 @@ public class MusicPlayer_Patches_RefreshMusicQueueForStage
         if (AppMusicPlayer_Patches.Instance != null)
         {
             Debug.Log("[BRR] Refreshing songs on the app...");
-
             AppMusicPlayer_Patches.Instance.RefreshList();
         }
     }
@@ -123,7 +122,18 @@ public class MusicPlayer_Patches_RefreshMusicQueueForStage
 
         Refresh(__instance, chapterMusic, stage);
 
-        __instance.musicTrackQueue.UpdateMusicQueueForStage(trackToPlay);
+        MusicTrack queuedTrack = trackToPlay;
+
+        if (BombRushRadio.DefaultShuffle.Value && !BombRushRadio.Shuffled)
+        {
+            __instance.SetShuffle(true);
+            int queueIndex = __instance.musicTrackQueue.indexQueue.GetFirstInQueue();
+            queuedTrack = __instance.musicTrackQueue.currentMusicTracks[queueIndex];
+            BombRushRadio.Shuffled = true;
+        }
+
+        __instance.musicTrackQueue.UpdateMusicQueueForStage(queuedTrack);
+
         return false;
     }
 }
